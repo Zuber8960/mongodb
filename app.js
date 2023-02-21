@@ -6,11 +6,13 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const mongoConnnect = require('./util/database').mongoConnect;
+const mongoose = require('mongoose');
+
+// const mongoConnnect = require('./util/database').mongoConnect;
 
 const errorController = require('./controllers/error');
 // const Product = require('./models/product');
-const User = require('./models/user');
+// const User = require('./models/user');
 // const Cart = require('./models/cart');
 // const CartItem = require('./models/cart-item');
 // const Order = require('./models/order');
@@ -28,14 +30,14 @@ const shopRoutes = require('./routes/shop');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-  User.findById("63f30c7904b4b5e4c9566f70")
-    .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch(err => console.log(err));
-});
+// app.use((req, res, next) => {
+//   User.findById("63f30c7904b4b5e4c9566f70")
+//     .then(user => {
+//       req.user = new User(user.name, user.email, user.cart, user._id);
+//       next();
+//     })
+//     .catch(err => console.log(err));
+// });
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -54,35 +56,16 @@ app.use(errorController.get404);
 
 
 
-mongoConnnect(() => {
-  console.log('-------------------------------------------------------------------------');
-  app.listen(3000); 
-});
+mongoose
+.connect(process.env.mongoDatabase)
+.then(result => {
+  app.listen(3000);
+})
+.catch(err => console.log(err));
 
 
 
 
 
-// sequelize
-//   .sync({ force: true })
-//   // .sync()
-//   .then(result => {
-//     return User.findById(1);
-//     // console.log(result);
-//   })
-//   .then(user => {
-//     if (!user) {
-//       return User.create({ name: 'Zuber', email: 'zuber8960@gmail.com' });
-//     }
-//     return user;
-//   })
-//   .then(user => {
-//     // console.log(user);
-//     return user.createCart();
-//   })
-//   .then(cart => {
-//     app.listen(3000);
-//   })
-//   .catch(err => {
-//     console.log(err);
-//   });
+
+

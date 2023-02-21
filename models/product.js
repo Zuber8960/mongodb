@@ -17,6 +17,11 @@ const productScheema = new Scheema({
   imageUrl : {
     type : String ,
     required : true,
+  },
+  userId : {
+    type : Scheema.Types.ObjectId,
+    ref : 'User',
+    required : true
   }
 });
 
